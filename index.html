@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#08080c" />
+<meta name="description" content="Hindi Voice Studio AI — professional Hindi text-to-speech for long scripts, narration and cinematic audio." />
+<title>Hindi Voice Studio AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#08080c;--panel:#111119;--panel2:#181822;--panel3:#1f1f2b;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --text:#ececf2;--muted:#8d8da0;--muted2:#6b6b80;
+  --accent:#7c5cff;--accent2:#a78bfa;--accentGlow:rgba(124,92,255,.35);
+  --success:#10b981;--danger:#ef4444;--warning:#f59e0b;--info:#3b82f6;
+  --r:14px;--rs:10px;--rl:20px;
+  --font:'Inter','Noto Sans Devanagari',system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.5;min-height:100vh}
+body{background:radial-gradient(ellipse 80% 60% at 50% -20%,rgba(124,92,255,.15),transparent 60%),radial-gradient(ellipse 60% 50% at 90% 100%,rgba(167,139,250,.08),transparent 60%),var(--bg);background-attachment:fixed}
+button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+h1,h2,h3,h4,h5{font-weight:700;margin:0;letter-spacing:-.01em}
+h1{font-size:1.75rem}h2{font-size:1.35rem}h3{font-size:1.1rem}
+p{margin:0}
+a{color:var(--accent2);text-decoration:none}
+
+/* Layout */
+.app-shell{min-height:100vh;display:flex;flex-direction:column}
+.header{position:sticky;top:0;z-index:50;background:rgba(8,8,12,.75);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 20px}
+.header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.main{max-width:1280px;width:100%;margin:0 auto;padding:24px 20px 80px;flex:1}
+@media(max-width:640px){.main{padding:16px 12px 60px}.header{padding:0 12px}.header-inner{height:60px}}
+
+/* Logo */
+.brand{display:flex;align-items:center;gap:11px;background:none;border:0;padding:4px 6px;border-radius:10px;transition:background .15s}
+.brand:hover{background:rgba(255,255,255,.04)}
+.brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--accent),#a855f7);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px var(--accentGlow);color:white;flex-shrink:0}
+.brand-text{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}
+.brand-text strong{font-size:15px;font-weight:700}
+.brand-text small{font-size:11px;color:var(--muted);font-weight:500}
+
+/* Nav */
+.header-actions{display:flex;align-items:center;gap:8px}
+@media(max-width:640px){.brand-text small{display:none}.brand-text strong{font-size:13px}}
+.user-chip{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;background:var(--panel2);border:1px solid var(--border);border-radius:100px;font-size:13px}
+.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#a855f7);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white}
+.plan-badge{padding:2px 8px;border-radius:100px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.plan-free{background:rgba(141,141,160,.15);color:#c8c8d6}
+.plan-premium{background:linear-gradient(135deg,#f59e0b,#f97316);color:#1a1000}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:10px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-weight:600;font-size:13.5px;transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--panel3);border-color:var(--border2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{background:linear-gradient(135deg,var(--accent),#8b5cf6);border-color:transparent;color:white;box-shadow:0 4px 14px var(--accentGlow)}
+.btn.primary:hover{filter:brightness(1.1);box-shadow:0 6px 20px var(--accentGlow)}
+.btn.danger{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:#fca5a5}
+.btn.danger:hover{background:rgba(239,68,68,.25)}
+.btn.success{background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.35);color:#6ee7b7}
+.btn.success:hover{background:rgba(16,185,129,.25)}
+.btn.ghost{background:transparent}
+.btn.ghost:hover{background:var(--panel2)}
+.btn.small{padding:6px 12px;font-size:12px}
+.btn.full{width:100%}
+.btn-lg{padding:12px 22px;font-size:14.5px}
+.icon-btn{width:32px;height:32px;padding:0;border-radius:8px;background:transparent;border:0;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);transition:all .15s}
+.icon-btn:hover{background:rgba(255,255,255,.06);color:var(--text)}
+
+/* Cards */
+.card{background:linear-gradient(180deg,var(--panel),#0d0d15);border:1px solid var(--border);border-radius:var(--rl);padding:22px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.card-title{display:flex;align-items:center;gap:10px;font-size:1.05rem;font-weight:700}
+@media(max-width:640px){.card{padding:16px}}
+
+/* Grid */
+.studio-grid{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+@media(max-width:1024px){.studio-grid{grid-template-columns:1fr}}
+
+/* Form */
+.form-stack{display:flex;flex-direction:column;gap:14px}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px}
+label>span{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+input[type="text"],input[type="email"],input[type="password"],input[type="number"],textarea,select{width:100%;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);outline:none;transition:all .15s;font-size:14px}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accentGlow)}
+textarea{resize:vertical;min-height:120px;line-height:1.6;font-family:var(--font)}
+.script-textarea{min-height:260px;font-size:15px;line-height:1.8}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.form-row{grid-template-columns:1fr}}
+.form-error{padding:10px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:var(--rs);color:#fca5a5;font-size:13px;display:flex;align-items:flex-start;gap:8px}
+.form-success{padding:10px 14px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:var(--rs);color:#6ee7b7;font-size:13px}
+
+/* Control pills */
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{padding:8px 14px;border-radius:100px;border:1px solid var(--border);background:var(--bg);font-size:13px;font-weight:500;color:var(--muted);transition:all .15s}
+.pill:hover{border-color:var(--border2);color:var(--text)}
+.pill.active{background:linear-gradient(135deg,var(--accent),#8b5cf6);border-color:transparent;color:white;font-weight:600}
+.range-row{display:flex;align-items:center;gap:12px}
+.range-row input[type="range"]{flex:1;accent-color:var(--accent)}
+.range-value{min-width:52px;text-align:right;font-variant-numeric:tabular-nums;font-size:13px;color:var(--accent2);font-weight:600}
+
+/* Progress */
+.progress{display:flex;flex-direction:column;gap:8px}
+.progress-track{height:8px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:100px;transition:width .35s ease;box-shadow:0 0 12px var(--accentGlow)}
+.progress-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+
+/* Chips */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat{padding:16px;background:var(--panel2);border:1px solid var(--border);border-radius:var(--rs)}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:6px}
+.stat-value{font-size:22px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;animation:fade .15s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:var(--panel);border:1px solid var(--border2);border-radius:var(--rl);width:100%;max-width:440px;max-height:90vh;overflow-y:auto;animation:pop .2s ease}
+.modal.wide{max-width:820px}
+@keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border)}
+.modal-head h2{font-size:1.1rem}
+.modal-body{padding:22px}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:18px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 16px;background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);font-weight:600;font-size:13.5px;white-space:nowrap;margin-bottom:-1px}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+
+/* Auth tabs */
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:20px}
+.auth-tabs button{padding:9px;background:none;border:0;border-radius:7px;color:var(--muted);font-weight:600;font-size:13.5px;transition:all .15s}
+.auth-tabs button.active{background:var(--panel2);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.3)}
+
+/* Audio player */
+.audio-result{display:flex;flex-direction:column;gap:14px;padding:18px;background:var(--panel2);border:1px solid var(--border);border-radius:var(--rs);margin-top:16px}
+.audio-result-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.audio-result-head h3{font-size:1rem;margin-bottom:2px}
+.audio-result-head p{font-size:12px;color:var(--muted)}
+audio{width:100%;margin-top:8px}
+
+/* History */
+.history-list{display:flex;flex-direction:column;gap:10px}
+.history-item{padding:14px 16px;background:var(--panel2);border:1px solid var(--border);border-radius:var(--rs);display:flex;align-items:center;gap:12px;transition:all .15s}
+.history-item:hover{border-color:var(--border2);background:var(--panel3)}
+.history-meta{flex:1;min-width:0}
+.history-title{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.history-actions{display:flex;gap:4px;flex-shrink:0}
+.fav-active{color:#f59e0b}
+
+/* Empty */
+.empty{padding:40px 20px;text-align:center;color:var(--muted)}
+.empty-icon{width:56px;height:56px;background:var(--panel2);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--muted2)}
+
+/* Toast */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:300;display:flex;flex-direction:column;gap:10px;max-width:360px}
+@media(max-width:640px){.toast-container{left:12px;right:12px;bottom:12px;max-width:none}}
+.toast{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;background:var(--panel);border:1px solid var(--border2);border-radius:var(--rs);box-shadow:0 8px 24px rgba(0,0,0,.5);animation:slideIn .2s ease;font-size:13.5px}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.success{border-left:3px solid var(--success)}
+.toast.error{border-left:3px solid var(--danger)}
+.toast.info{border-left:3px solid var(--info)}
+
+/* Loading spinner */
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.loading-inline{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
+
+/* Admin */
+.admin-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.user-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--panel2);border:1px solid var(--border);border-radius:var(--rs);margin-bottom:8px}
+.user-info{flex:1;min-width:0}
+.user-email{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-meta{font-size:11.5px;color:var(--muted);margin-top:2px}
+.user-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* Section */
+.section-title{display:flex;align-items:center;gap:10px;margin-bottom:16px;font-size:1.05rem;font-weight:700}
+
+/* Utility */
+.flex{display:flex}.flex-col{flex-direction:column}.gap-2{gap:8px}.gap-3{gap:12px}.gap-4{gap:16px}
+.items-center{align-items:center}.justify-between{justify-content:space-between}
+.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}.mt-6{margin-top:24px}
+.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}
+.text-muted{color:var(--muted)}.text-sm{font-size:13px}.text-xs{font-size:11px}
+.w-full{width:100%}.hidden{display:none}
+.hero{padding:32px 0 24px;text-align:center}
+.hero h1{font-size:clamp(1.6rem,4vw,2.2rem);margin-bottom:8px;background:linear-gradient(135deg,#fff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--muted);font-size:14.5px;max-width:600px;margin:0 auto}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+const {useState,useEffect,useRef,useMemo,useCallback,useContext,createContext} = React;
+
+/* ============================================================
+   FIREBASE INIT
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyBf8RXmDDNLXVRtJFxAqUtmdp6sWFX2fHM",
+  authDomain: "eduplayclass1to10premium.firebaseapp.com",
+  projectId: "eduplayclass1to10premium",
+  storageBucket: "eduplayclass1to10premium.firebasestorage.app",
+  messagingSenderId: "50143946673",
+  appId: "1:50143946673:web:335cbdbe804cbb59d13f90",
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+/* ============================================================
+   CONSTANTS
+   ============================================================ */
+const VOICES = [
+  {id:'male',label:'Male',hint:'Deep masculine'},
+  {id:'female',label:'Female',hint:'Warm expressive'},
+  {id:'young',label:'Young',hint:'Youthful energetic'},
+  {id:'elderly',label:'Elderly',hint:'Wise measured'},
+  {id:'narrator',label:'Narrator',hint:'Neutral pro'},
+];
+const STYLES = [
+  {id:'news',label:'News'},{id:'historical',label:'Historical'},
+  {id:'emotional',label:'Emotional'},{id:'documentary',label:'Documentary'},
+  {id:'horror',label:'Horror'},{id:'mysterious',label:'Mysterious'},
+  {id:'cinematic',label:'Cinematic'},{id:'storytelling',label:'Storytelling'},
+];
+const PITCHES = [
+  {id:'low',label:'Deep'},{id:'normal',label:'Natural'},{id:'high',label:'Bright'},
+];
+const DEFAULT_PLANS = {
+  free:{id:'free',label:'Free',charLimit:10000,historyLimit:20,price:0,currency:'INR'},
+  premium:{id:'premium',label:'Premium',charLimit:500000,historyLimit:1000,price:499,currency:'INR'},
+};
+const SAMPLE = `भारत एक विशाल और विविधताओं से भरा देश है। यहाँ की संस्कृति, भाषा और परंपराएँ सदियों से एक-दूसरे से जुड़ी हुई हैं।
+
+इस कहानी की शुरुआत होती है एक छोटे से गाँव से, जहाँ का हर व्यक्ति अपने सपनों को साकार करने के लिए संघर्ष करता है।
+
+समय बीतता है, और उसकी मेहनत रंग लाने लगती है। उसकी कहानियाँ लोगों के दिलों तक पहुँचती हैं।`;
+
+/* ============================================================
+   ICONS (inline SVG, no dependency)
+   ============================================================ */
+const Icon = ({name,size=18,className='',style={}}) => {
+  const paths = {
+    audio:<><path d="M3 10v4a1 1 0 0 0 1 1h2l5 4V5L6 9H4a1 1 0 0 0-1 1z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M19 5a10 10 0 0 1 0 14"/></>,
+    play:<polygon points="6 4 20 12 6 20 6 4"/>,
+    pause:<><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></>,
+    download:<><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></>,
+    heart:<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>,
+    trash:<><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></>,
+    edit:<><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></>,
+    close:<><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>,
+    check:<polyline points="20 6 9 17 4 12"/>,
+    alert:<><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></>,
+    info:<><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></>,
+    user:<><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></>,
+    logout:<><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></>,
+    music:<><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></>,
+    mic:<><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></>,
+    settings:<><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></>,
+    shield:<><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></>,
+    users:<><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>,
+    dollar:<><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></>,
+    chart:<><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></>,
+    crown:<><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"/></>,
+    lock:<><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>,
+    refresh:<><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></>,
+    share:<><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></>,
+    file:<><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></>,
+    plus:<><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>,
+    refresh2:<><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></>,
+  };
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={style}>{paths[name]||null}</svg>;
+};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function splitIntoChunks(text, maxChars = 3500) {
+  const normalized = String(text || '').replace(/\r\n/g, '\n').trim();
+  if (!normalized) return [];
+  const paragraphs = normalized.split(/\n\s*\n+/).map(p => p.trim()).filter(Boolean);
+  const chunks = [];
+  const hardSplit = (value) => {
+    let remaining = value.trim();
+    while (remaining.length > maxChars) {
+      let cut = remaining.lastIndexOf(' ', maxChars);
+      if (cut < Math.floor(maxChars * 0.5)) cut = maxChars;
+      chunks.push(remaining.slice(0, cut).trim());
+      remaining = remaining.slice(cut).trim();
+    }
+    if (remaining) chunks.push(remaining);
+  };
+  for (const p of paragraphs) {
+    if (p.length <= maxChars) { chunks.push(p); continue; }
+    const sentences = p.split(/(?<=[।.!?])\s+/);
+    let current = '';
+    for (const s of sentences) {
+      if (!s) continue;
+      if (s.length > maxChars) {
+        if (current) { chunks.push(current.trim()); current = ''; }
+        hardSplit(s);
+        continue;
+      }
+      const next = current ? current + ' ' + s : s;
+      if (next.length > maxChars) {
+        if (current) chunks.push(current.trim());
+        current = s;
+      } else current = next;
+    }
+    if (current) chunks.push(current.trim());
+  }
+  return chunks.filter(Boolean);
+}
+
+function getAudioCtx() {
+  const C = window.AudioContext || window.webkitAudioContext;
+  if (!C) throw new Error('Web Audio API not supported.');
+  return new C();
+}
+async function decodeAudio(arrayBuffer, ctx) {
+  return new Promise((resolve, reject) => {
+    ctx.decodeAudioData(arrayBuffer.slice(0), resolve, reject);
+  });
+}
+async function mergeBuffers(buffers, sampleRate) {
+  if (!buffers.length) throw new Error('No audio buffers to merge.');
+  const channels = Math.max(...buffers.map(b => b.numberOfChannels));
+  const rate = sampleRate || buffers[0].sampleRate;
+  const totalLength = buffers.reduce((s, b) => s + b.length, 0);
+  const offline = new OfflineAudioContext(channels, Math.max(1, totalLength), rate);
+  let offset = 0;
+  for (const buffer of buffers) {
+    const source = offline.createBufferSource();
+    source.buffer = buffer;
+    source.connect(offline.destination);
+    source.start(offset);
+    offset += buffer.duration;
+  }
+  return offline.startRendering();
+}
+async function mixMusic(voiceBuffer, musicBuffer, volume = 0.18) {
+  const channels = Math.max(voiceBuffer.numberOfChannels, musicBuffer.numberOfChannels);
+  const offline = new OfflineAudioContext(channels, voiceBuffer.length, voiceBuffer.sampleRate);
+  const voiceSource = offline.createBufferSource();
+  voiceSource.buffer = voiceBuffer;
+  voiceSource.connect(offline.destination);
+  voiceSource.start(0);
+  const musicSource = offline.createBufferSource();
+  musicSource.buffer = musicBuffer;
+  musicSource.loop = true;
+  const gain = offline.createGain();
+  gain.gain.value = Math.min(1, Math.max(0, Number(volume) || 0.18));
+  musicSource.connect(gain);
+  gain.connect(offline.destination);
+  musicSource.start(0);
+  musicSource.stop(voiceBuffer.duration);
+  return offline.startRendering();
+}
+function floatTo16(input) {
+  const out = new Int16Array(input.length);
+  for (let i = 0; i < input.length; i++) {
+    const s = Math.max(-1, Math.min(1, input[i]));
+    out[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+  }
+  return out;
+}
+function bufferToWav(buffer) {
+  const ch = buffer.numberOfChannels;
+  const sr = buffer.sampleRate;
+  const channels = [];
+  for (let c = 0; c < ch; c++) channels.push(buffer.getChannelData(c));
+  const length = buffer.length * ch * 2 + 44;
+  const ab = new ArrayBuffer(length);
+  const view = new DataView(ab);
+  const writeStr = (o, s) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+  writeStr(0, 'RIFF');
+  view.setUint32(4, 36 + buffer.length * ch * 2, true);
+  writeStr(8, 'WAVE');
+  writeStr(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, ch, true);
+  view.setUint32(24, sr, true);
+  view.setUint32(28, sr * ch * 2, true);
+  view.setUint16(32, ch * 2, true);
+  view.setUint16(34, 16, true);
+  writeStr(36, 'data');
+  view.setUint32(40, buffer.length * ch * 2, true);
+  let offset = 44;
+  for (let i = 0; i < buffer.length; i++) {
+    for (let c = 0; c < ch; c++) {
+      const s = Math.max(-1, Math.min(1, channels[c][i]));
+      view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+      offset += 2;
+    }
+  }
+  return new Blob([ab], {type:'audio/wav'});
+}
+function bufferToMp3(buffer, bitrate = 128) {
+  const lamejs = window.lamejs;
+  if (!lamejs || !lamejs.Mp3Encoder) throw new Error('MP3 encoder unavailable.');
+  const ch = Math.min(2, buffer.numberOfChannels);
+  const enc = new lamejs.Mp3Encoder(ch, buffer.sampleRate, bitrate);
+  const left = floatTo16(buffer.getChannelData(0));
+  const right = ch > 1 ? floatTo16(buffer.getChannelData(1)) : null;
+  const blockSize = 1152;
+  const mp3Data = [];
+  for (let i = 0; i < left.length; i += blockSize) {
+    const lc = left.subarray(i, i + blockSize);
+    let enc2;
+    if (ch > 1 && right) {
+      const rc = right.subarray(i, i + blockSize);
+      enc2 = enc.encodeBuffer(lc, rc);
+    } else enc2 = enc.encodeBuffer(lc);
+    if (enc2.length > 0) mp3Data.push(new Uint8Array(enc2));
+  }
+  const final = enc.flush();
+  if (final.length > 0) mp3Data.push(new Uint8Array(final));
+  return new Blob(mp3Data, {type:'audio/mpeg'});
+}
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+function safeName(v, fb = 'hindi-voice') {
+  return (String(v || '').replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 80)) || fb;
+}
+function formatTime(sec) {
+  const t = Math.max(0, Math.round(Number(sec) || 0));
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s = t % 60;
+  return h > 0 ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`;
+}
+
+/* ============================================================
+   AUTH CONTEXT
+   ============================================================ */
+const AuthCtx = createContext(null);
+const useAuth = () => useContext(AuthCtx);
+
+function AuthProvider({children}) {
+  const [user, setUser] = useState(null);
+  const [userDoc, setUserDoc] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let unsubDoc = null;
+    const unsubAuth = auth.onAuthStateChanged(async (u) => {
+      if (unsubDoc) { unsubDoc(); unsubDoc = null; }
+      setUser(u);
+      if (!u) {
+        setUserDoc(null); setIsAdmin(false); setReady(true); return;
+      }
+      const userRef = db.collection('users').doc(u.uid);
+      try {
+        const snap = await userRef.get();
+        if (!snap.exists) {
+          await userRef.set({
+            uid: u.uid, email: u.email || '', displayName: u.displayName || '',
+            plan: 'free', isBlocked: false, role: 'user',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+        }
+        unsubDoc = userRef.onSnapshot((ds) => {
+          setUserDoc(ds.exists ? {uid: ds.id, ...ds.data()} : null);
+        });
+        const tr = await u.getIdTokenResult();
+        setIsAdmin(tr.claims.admin === true);
+      } catch (e) { console.error('[auth]', e); }
+      finally { setReady(true); }
+    });
+    return () => { if (unsubDoc) unsubDoc(); unsubAuth(); };
+  }, []);
+
+  const register = useCallback(async (name, email, password) => {
+    const cred = await auth.createUserWithEmailAndPassword(email, password);
+    if (name) await cred.user.updateProfile({displayName: name});
+    await db.collection('users').doc(cred.user.uid).set({
+      uid: cred.user.uid, email, displayName: name || '',
+      plan: 'free', isBlocked: false, role: 'user',
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    await cred.user.getIdToken(true);
+    return cred.user;
+  }, []);
+  const login = useCallback(async (email, password) => {
+    const cred = await auth.signInWithEmailAndPassword(email, password);
+    await cred.user.getIdToken(true);
+    return cred.user;
+  }, []);
+  const logout = useCallback(async () => {
+    await auth.signOut();
+    setUserDoc(null); setIsAdmin(false);
+  }, []);
+  const getToken = useCallback(async (force = false) => {
+    if (!auth.currentUser) return null;
+    return auth.currentUser.getIdToken(force);
+  }, []);
+  const refreshAdmin = useCallback(async () => {
+    if (!auth.currentUser) return false;
+    const tr = await auth.currentUser.getIdTokenResult(true);
+    const a = tr.claims.admin === true;
+    setIsAdmin(a);
+    return a;
+  }, []);
+
+  return (
+    <AuthCtx.Provider value={{user, userDoc, isAdmin, ready, register, login, logout, getToken, refreshAdmin}}>
+      {children}
+    </AuthCtx.Provider>
+  );
+}
+
+/* ============================================================
+   API HELPER
+   ============================================================ */
+async function apiCall(path, {method='GET', body, token} = {}) {
+  const headers = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  let payload;
+  if (body !== undefined) {
+    headers['Content-Type'] = 'application/json';
+    payload = JSON.stringify(body);
+  }
+  const res = await fetch(path, {method, headers, body: payload});
+  const ct = res.headers.get('content-type') || '';
+  const data = ct.includes('application/json') ? await res.json() : await res.blob();
+  if (!res.ok) {
+    const err = new Error(data?.error || `HTTP ${res.status}`);
+    err.status = res.status;
+    err.code = data?.code;
+    throw err;
+  }
+  return data;
+}
+
+/* ============================================================
+   UI PRIMITIVES
+   ============================================================ */
+function Modal({open, title, onClose, children, wide}) {
+  if (!open) return null;
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className={`modal ${wide ? 'wide' : ''}`} onClick={e => e.stopPropagation()}>
+        <div className="modal-head">
+          <h2>{title}</h2>
+          <button className="icon-btn" onClick={onClose}><Icon name="close" size={18} /></button>
+        </div>
+        <div className="modal-body">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function Toast({toasts, onDismiss}) {
+  if (!toasts.length) return null;
+  return (
+    <div className="toast-container">
+      {toasts.map(t => (
+        <div key={t.id} className={`toast ${t.type || 'info'}`}>
+          <Icon name={t.type === 'success' ? 'check' : t.type === 'error' ? 'alert' : 'info'} size={16} />
+          <div style={{flex:1,fontSize:13}}>{t.message}</div>
+          <button className="icon-btn" onClick={() => onDismiss(t.id)} style={{width:22,height:22}}><Icon name="close" size={13} /></button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function Progress({value, label}) {
+  const v = Math.min(100, Math.max(0, Number(value) || 0));
+  return (
+    <div className="progress">
+      <div className="progress-track"><div className="progress-fill" style={{width: v + '%'}} /></div>
+      <div className="progress-meta"><span>{label}</span><span>{Math.round(v)}%</span></div>
+    </div>
+  );
+}
+
+function LoadingBtn({loading, children, ...props}) {
+  return (
+    <button {...props} disabled={loading || props.disabled}>
+      {loading ? <><Icon name="refresh" size={16} className="spin" /> Please wait…</> : children}
+    </button>
+  );
+}
+
+/* ============================================================
+   LOGO (with 5-click admin trigger)
+   ============================================================ */
+function Logo({onFiveClick}) {
+  const [clicks, setClicks] = useState(0);
+  const timer = useRef(null);
+  const click = () => {
+    if (timer.current) clearTimeout(timer.current);
+    const next = clicks + 1;
+    if (next >= 5) { setClicks(0); onFiveClick(); return; }
+    setClicks(next);
+    timer.current = setTimeout(() => setClicks(0), 2000);
+  };
+  return (
+    <button className="brand" onClick={click} aria-label="Hindi Voice Studio AI">
+      <div className="brand-mark"><Icon name="audio" size={20} /></div>
+      <div className="brand-text">
+        <strong>Hindi Voice</strong>
+        <small>Studio AI</small>
+      </div>
+    </button>
+  );
+}
+
+/* ============================================================
+   AUTH MODAL
+   ============================================================ */
+function AuthModal({open, onClose, onToast}) {
+  const {login, register} = useAuth();
+  const [mode, setMode] = useState('login');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setError(''); setLoading(true);
+    try {
+      if (mode === 'register') await register(name.trim(), email.trim(), password);
+      else await login(email.trim(), password);
+      setName(''); setEmail(''); setPassword('');
+      onToast({type: 'success', message: mode === 'register' ? 'Account created!' : 'Signed in.'});
+      onClose();
+    } catch (err) {
+      const msgs = {
+        'auth/email-already-in-use': 'This email is already registered. Please sign in.',
+        'auth/invalid-email': 'Please enter a valid email.',
+        'auth/weak-password': 'Password must be at least 6 characters.',
+        'auth/invalid-credential': 'Invalid email or password.',
+        'auth/user-not-found': 'No account with this email.',
+        'auth/wrong-password': 'Incorrect password.',
+        'auth/too-many-requests': 'Too many attempts. Try again later.',
+      };
+      setError(msgs[err?.code] || err?.message || 'Authentication failed.');
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <Modal open={open} title={mode === 'login' ? 'Sign in' : 'Create account'} onClose={onClose}>
+      <div className="auth-tabs">
+        <button className={mode === 'login' ? 'active' : ''} onClick={() => {setMode('login'); setError('');}}>Login</button>
+        <button className={mode === 'register' ? 'active' : ''} onClick={() => {setMode('register'); setError('');}}>Register</button>
+      </div>
+      <form className="form-stack" onSubmit={submit}>
+        {mode === 'register' && (
+          <label><span>Name</span>
+            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name" required />
+          </label>
+        )}
+        <label><span>Email</span>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" required />
+        </label>
+        <label><span>Password</span>
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Min 6 characters" minLength={6} required />
+        </label>
+        {error && <div className="form-error"><Icon name="alert" size={15} /><span>{error}</span></div>}
+        <LoadingBtn type="submit" loading={loading} className="btn primary full">
+          {mode === 'login' ? 'Sign in' : 'Create account'}
+        </LoadingBtn>
+      </form>
+    </Modal>
+  );
+}
+
+/* ============================================================
+   ADMIN LOGIN MODAL (5-click triggered)
+   ============================================================ */
+function AdminLoginModal({open, onClose, onSuccess, onToast}) {
+  const {login, refreshAdmin, user} = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const submit = async (e) => {
+    e.preventDefault();
+    setError(''); setLoading(true);
+    try {
+      if (!user || user.email !== email.trim()) {
+        await login(email.trim(), password);
+      }
+      const admin = await refreshAdmin();
+      if (!admin) {
+        setError('This account does not have admin access. Ask your system administrator to grant the custom claim.');
+        return;
+      }
+      onSuccess();
+      onClose();
+      onToast({type: 'success', message: 'Admin access granted.'});
+    } catch (err) {
+      setError(err?.message || 'Login failed.');
+    } finally { setLoading(false); }
+  };
+
+  return (
+    <Modal open={open} title="Admin access" onClose={onClose}>
+      <div style={{textAlign:'center',padding:'12px 0 20px'}}>
+        <div style={{width:60,height:60,borderRadius:16,background:'linear-gradient(135deg,var(--accent),#a855f7)',display:'flex',alignItems:'center',justifyContent:'center',margin:'0 auto 12px',boxShadow:'0 8px 24px var(--accentGlow)'}}>
+          <Icon name="shield" size={28} style={{color:'white'}} />
+        </div>
+        <p className="text-sm text-muted">Restricted area. Admin credentials required.</p>
+      </div>
+      <form className="form-stack" onSubmit={submit}>
+        <label><span>Admin email</span>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@example.com" required />
+        </label>
+        <label><span>Password</span>
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Your password" required />
+        </label>
+        {error && <div className="form-error"><Icon name="alert" size={15} /><span>{error}</span></div>}
+        <LoadingBtn type="submit" loading={loading} className="btn primary full">
+          <Icon name="lock" size={15} /> Verify admin
+        </LoadingBtn>
+      </form>
+      <p className="text-xs text-muted mt-4" style={{textAlign:'center'}}>
+        Admin access requires a Firebase custom claim set by the CLI script.
+      </p>
+    </Modal>
+  );
+}
+
+/* ============================================================
+   STUDIO (main creation interface)
+   ============================================================ */
+function Studio({onRequireAuth, onToast}) {
+  const {user, userDoc, getToken} = useAuth();
+  const [text, setText] = useState('');
+  const [title, setTitle] = useState('');
+  const [voice, setVoice] = useState('narrator');
+  const [style, setStyle] = useState('documentary');
+  const [pitch, setPitch] = useState('normal');
+  const [speed, setSpeed] = useState(1);
+  const [instructions, setInstructions] = useState('');
+  const [musicFile, setMusicFile] = useState(null);
+  const [musicVol, setMusicVol] = useState(0.18);
+  const [plans, setPlans] = useState(DEFAULT_PLANS);
+  const [previewing, setPreviewing] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [phase, setPhase] = useState('');
+  const [error, setError] = useState('');
+  const [result, setResult] = useState(null);
+  const [isFav, setIsFav] = useState(false);
+  const ctxRef = useRef(null);
+  const playRef = useRef(null);
+  const cancelRef = useRef(false);
+
+  useEffect(() => {
+    apiCall('/api/plans').then(d => d?.plans && setPlans(d.plans)).catch(() => {});
+  }, []);
+
+  useEffect(() => () => {
+    if (playRef.current?.stop) playRef.current.stop();
+    if (result?.url) URL.revokeObjectURL(result.url);
+  }, [result?.url]);
+
+  const chunks = useMemo(() => splitIntoChunks(text, 3500), [text]);
+  const wordCount = useMemo(() => text.trim().split(/\s+/).filter(Boolean).length, [text]);
+  const plan = userDoc?.plan === 'premium' ? plans.premium : plans.free;
+  const usedChars = userDoc?.usageMonth === new Date().toISOString().slice(0,7) ? (userDoc?.usageChars || 0) : 0;
+  const remainingChars = Math.max(0, (plan?.charLimit || 10000) - usedChars);
+
+  const ensureReady = () => {
+    if (!user) { onRequireAuth(); return false; }
+    if (userDoc?.isBlocked) { setError('Your account is blocked. Contact support.'); return false; }
+    return true;
+  };
+
+  const requestChunk = async (chunkText, signal) => {
+    const token = await getToken();
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', Authorization: `Bearer ${token}`},
+      signal,
+      body: JSON.stringify({text: chunkText, voiceStyle: voice, narrationStyle: style, pitch, speed, userInstructions: instructions}),
+    });
+    if (!res.ok) {
+      let msg = `TTS failed (${res.status})`;
+      try { const p = await res.json(); if (p.error) msg = p.error; } catch {}
+      if (res.status === 404) msg = 'Backend not deployed. Please deploy /api/tts.js to Vercel.';
+      const err = new Error(msg); err.status = res.status; throw err;
+    }
+    return res.arrayBuffer();
+  };
+
+  const withRetry = async (fn, retries = 2) => {
+    let last;
+    for (let i = 0; i <= retries; i++) {
+      try { return await fn(); }
+      catch (err) {
+        last = err;
+        if ([401, 402, 403].includes(err?.status)) throw err;
+        if (i < retries) await new Promise(r => setTimeout(r, 900 * (i + 1)));
+      }
+    }
+    throw last;
+  };
+
+  const playBuffer = async (buffer) => {
+    if (playRef.current?.stop) playRef.current.stop();
+    const ctx = ctxRef.current || getAudioCtx();
+    ctxRef.current = ctx;
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    src.connect(ctx.destination);
+    src.start(0);
+    playRef.current = {stop: () => { try { src.stop(); } catch {} }};
+  };
+
+  const preview = async () => {
+    setError('');
+    if (!ensureReady()) return;
+    if (!chunks.length) { setError('Please enter Hindi text first.'); return; }
+    setPreviewing(true);
+    try {
+      const buf = await withRetry(() => requestChunk(chunks[0]));
+      const ctx = ctxRef.current || getAudioCtx();
+      ctxRef.current = ctx;
+      const decoded = await decodeAudio(buf, ctx);
+      await playBuffer(decoded);
+      onToast({type: 'success', message: 'Playing preview of first chunk.'});
+    } catch (err) { setError(err?.message || 'Preview failed.'); }
+    finally { setPreviewing(false); }
+  };
+
+  const generate = async () => {
+    setError('');
+    if (!ensureReady()) return;
+    if (!chunks.length) { setError('Please enter Hindi text.'); return; }
+    if (text.length > remainingChars) {
+      setError(`Your ${userDoc?.plan || 'free'} plan allows ${plan.charLimit.toLocaleString()} chars/month. You have ${remainingChars.toLocaleString()} remaining.`);
+      return;
+    }
+    cancelRef.current = false;
+    setGenerating(true);
+    setResult(null); setIsFav(false); setProgress(0); setPhase('Preparing…');
+    const ctx = ctxRef.current || getAudioCtx();
+    ctxRef.current = ctx;
+
+    try {
+      const buffers = [];
+      let done = 0;
+      for (const chunk of chunks) {
+        if (cancelRef.current) throw new Error('Cancelled.');
+        setPhase(`Generating ${done + 1} / ${chunks.length}…`);
+        const ab = await withRetry(() => requestChunk(chunk));
+        buffers.push(await decodeAudio(ab, ctx));
+        done++;
+        setProgress(Math.round((done / chunks.length) * 82));
+      }
+      setPhase('Merging…');
+      let finalBuf = await mergeBuffers(buffers, ctx.sampleRate);
+      setProgress(86);
+      if (musicFile) {
+        setPhase('Mixing music…');
+        const mAb = await musicFile.arrayBuffer();
+        const mBuf = await decodeAudio(mAb, ctx);
+        finalBuf = await mixMusic(finalBuf, mBuf, musicVol);
+        setProgress(92);
+      }
+      setPhase('Encoding MP3…');
+      const mp3 = bufferToMp3(finalBuf);
+      const url = URL.createObjectURL(mp3);
+      setProgress(96);
+      const audioId = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36));
+      const finalTitle = title.trim() || `Narration — ${new Date().toLocaleString('en-IN')}`;
+      const filename = safeName(finalTitle) + '.mp3';
+      setPhase('Saving to history…');
+      const path = `audio/${user.uid}/${audioId}.mp3`;
+      const ref = storage.ref(path);
+      await ref.put(mp3, {contentType: 'audio/mpeg'});
+      const dl = await ref.getDownloadURL();
+      await db.collection('audio').doc(audioId).set({
+        uid: user.uid, title: finalTitle, filename,
+        scriptPreview: text.slice(0, 500), scriptLength: text.length,
+        settings: {voiceStyle: voice, narrationStyle: style, pitch, speed, musicUsed: !!musicFile, musicVolume: musicFile ? musicVol : 0},
+        storagePath: path, downloadURL: dl, format: 'mp3',
+        duration: finalBuf.duration, chunkCount: chunks.length,
+        isFavorite: false, createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      setResult({id: audioId, title: finalTitle, filename, blob: mp3, buffer: finalBuf, url, downloadURL: dl, duration: finalBuf.duration});
+      setProgress(100); setPhase('Complete');
+      onToast({type: 'success', message: 'Audio generated and saved.'});
+    } catch (err) {
+      setError(err?.message || 'Generation failed.');
+      setPhase('');
+    } finally { setGenerating(false); }
+  };
+
+  const generateParagraphs = async () => {
+    setError('');
+    if (!ensureReady()) return;
+    const paragraphs = text.split(/\n\s*\n+/).map(p => p.trim()).filter(Boolean);
+    if (!paragraphs.length) { setError('No paragraphs found.'); return; }
+    setGenerating(true); setPhase('Generating paragraphs…');
+    const ctx = ctxRef.current || getAudioCtx();
+    ctxRef.current = ctx;
+    try {
+      for (let i = 0; i < paragraphs.length; i++) {
+        setPhase(`Paragraph ${i + 1} / ${paragraphs.length}…`);
+        setProgress(Math.round(((i + 1) / paragraphs.length) * 100));
+        const ab = await withRetry(() => requestChunk(paragraphs[i]));
+        const buf = await decodeAudio(ab, ctx);
+        const mp3 = bufferToMp3(buf);
+        downloadBlob(mp3, safeName(title || 'paragraph') + `-${i + 1}.mp3`);
+      }
+      setPhase('Done'); onToast({type: 'success', message: 'All paragraphs downloaded.'});
+    } catch (err) { setError(err?.message || 'Paragraph generation failed.'); }
+    finally { setGenerating(false); }
+  };
+
+  const downloadAs = async (format) => {
+    if (!result) return;
+    try {
+      if (format === 'wav') {
+        downloadBlob(bufferToWav(result.buffer), safeName(result.title) + '.wav');
+      } else {
+        downloadBlob(result.blob, result.filename);
+      }
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const toggleFav = async () => {
+    if (!result?.id) return;
+    const next = !isFav;
+    try {
+      await db.collection('audio').doc(result.id).update({isFavorite: next, updatedAt: firebase.firestore.FieldValue.serverTimestamp()});
+      setIsFav(next);
+      onToast({type: 'success', message: next ? 'Added to favorites.' : 'Removed from favorites.'});
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const share = async () => {
+    if (!result) return;
+    try {
+      if (navigator.share && result.downloadURL) {
+        await navigator.share({title: result.title, text: 'Listen to my Hindi narration', url: result.downloadURL});
+      } else if (result.downloadURL) {
+        await navigator.clipboard.writeText(result.downloadURL);
+        onToast({type: 'success', message: 'Share link copied!'});
+      }
+    } catch (e) { onToast({type: 'error', message: 'Share failed.'}); }
+  };
+
+  return (
+    <div>
+      <div className="hero">
+        <h1>Hindi Voice Studio AI</h1>
+        <p>Generate professional Hindi narration for news, documentaries, stories and cinematic scripts. Chunked for long scripts, styled for emotion.</p>
+      </div>
+
+      <div className="studio-grid">
+        <div className="card">
+          <div className="card-header">
+            <div className="card-title"><Icon name="mic" size={18} /> Script</div>
+            <div className="text-xs text-muted">
+              {wordCount.toLocaleString()} words · {text.length.toLocaleString()} chars · {chunks.length} chunks
+            </div>
+          </div>
+          <div className="form-stack">
+            <label><span>Title (optional)</span>
+              <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="My Hindi narration" />
+            </label>
+            <label><span>Hindi text</span>
+              <textarea className="script-textarea" value={text} onChange={e => setText(e.target.value)} placeholder="यहाँ अपना हिंदी स्क्रिप्ट लिखें..." />
+            </label>
+            <div className="flex gap-2">
+              <button className="btn small ghost" onClick={() => setText(SAMPLE)}><Icon name="file" size={14} /> Load sample</button>
+              <button className="btn small ghost" onClick={() => {setText(''); setResult(null);}}>Clear</button>
+            </div>
+            {error && <div className="form-error"><Icon name="alert" size={15} /><span>{error}</span></div>}
+            {generating && <Progress value={progress} label={phase} />}
+          </div>
+        </div>
+
+        <div className="card" style={{position: 'sticky', top: 88}}>
+          <div className="card-header">
+            <div className="card-title"><Icon name="settings" size={18} /> Settings</div>
+          </div>
+          <div className="form-stack">
+            <div>
+              <div className="text-xs text-muted mb-2" style={{textTransform:'uppercase',fontWeight:600,letterSpacing:'.04em'}}>Voice</div>
+              <div className="pills">
+                {VOICES.map(v => (
+                  <button key={v.id} className={`pill ${voice === v.id ? 'active' : ''}`} onClick={() => setVoice(v.id)}>{v.label}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-muted mb-2" style={{textTransform:'uppercase',fontWeight:600,letterSpacing:'.04em'}}>Style</div>
+              <div className="pills">
+                {STYLES.map(s => (
+                  <button key={s.id} className={`pill ${style === s.id ? 'active' : ''}`} onClick={() => setStyle(s.id)}>{s.label}</button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-muted mb-2" style={{textTransform:'uppercase',fontWeight:600,letterSpacing:'.04em'}}>Pitch</div>
+              <div className="pills">
+                {PITCHES.map(p => (
+                  <button key={p.id} className={`pill ${pitch === p.id ? 'active' : ''}`} onClick={() => setPitch(p.id)}>{p.label}</button>
+                ))}
+              </div>
+            </div>
+            <label><span>Speed: {speed.toFixed(1)}×</span>
+              <input type="range" min="0.5" max="2" step="0.1" value={speed} onChange={e => setSpeed(Number(e.target.value))} />
+            </label>
+            <label><span>Custom instructions (optional)</span>
+              <textarea style={{minHeight:60}} value={instructions} onChange={e => setInstructions(e.target.value)} placeholder="e.g. speak slowly and dramatically" maxLength={900} />
+            </label>
+            <label><span>Background music (optional)</span>
+              <input type="file" accept="audio/*" onChange={e => setMusicFile(e.target.files?.[0] || null)} style={{padding:8}} />
+              {musicFile && (
+                <div className="flex gap-2 items-center mt-2">
+                  <span className="text-xs text-muted" style={{flex:1,overflow:'hidden',textOverflow:'ellipsis'}}>{musicFile.name}</span>
+                  <button className="icon-btn" onClick={() => setMusicFile(null)}><Icon name="close" size={14} /></button>
+                </div>
+              )}
+            </label>
+            {musicFile && (
+              <label><span>Music volume: {Math.round(musicVol * 100)}%</span>
+                <input type="range" min="0" max="1" step="0.05" value={musicVol} onChange={e => setMusicVol(Number(e.target.value))} />
+              </label>
+            )}
+            <div className="text-xs text-muted">
+              <strong style={{color: 'var(--text)'}}>{userDoc?.plan === 'premium' ? 'Premium' : 'Free'}</strong> · Remaining {remainingChars.toLocaleString()} chars
+            </div>
+            <button className="btn full" onClick={preview} disabled={previewing || generating || !text}>
+              {previewing ? <><Icon name="refresh" size={15} className="spin" /> Loading preview…</> : <><Icon name="play" size={15} /> Preview first chunk</>}
+            </button>
+            <button className="btn primary full btn-lg" onClick={generate} disabled={generating || !text}>
+              {generating ? <><Icon name="refresh" size={15} className="spin" /> {phase}</> : <><Icon name="mic" size={15} /> Generate full audio</>}
+            </button>
+            {generating && (
+              <button className="btn danger full" onClick={() => {cancelRef.current = true; setPhase('Cancelling…');}}>Cancel</button>
+            )}
+            <button className="btn full" onClick={generateParagraphs} disabled={generating || !text}>
+              <Icon name="file" size={15} /> Generate paragraph-wise
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {result && (
+        <div className="card mt-6">
+          <div className="card-header">
+            <div className="card-title"><Icon name="audio" size={18} /> Generated audio</div>
+            <button className="icon-btn" onClick={() => {setResult(null); setIsFav(false);}}><Icon name="close" size={16} /></button>
+          </div>
+          <div className="audio-result">
+            <div className="audio-result-head">
+              <div>
+                <h3>{result.title}</h3>
+                <p>{formatTime(result.duration)} · MP3 · {chunks.length} chunks</p>
+              </div>
+              <button className={`icon-btn ${isFav ? 'fav-active' : ''}`} onClick={toggleFav} title="Favorite">
+                <Icon name="heart" size={18} />
+              </button>
+            </div>
+            <audio controls src={result.url} />
+            <div className="pills">
+              <button className="btn small" onClick={() => downloadAs('mp3')}><Icon name="download" size={14} /> MP3</button>
+              <button className="btn small" onClick={() => downloadAs('wav')}><Icon name="download" size={14} /> WAV</button>
+              <button className="btn small" onClick={share}><Icon name="share" size={14} /> Share</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   DASHBOARD (history, favorites, premium request)
+   ============================================================ */
+function Dashboard({onToast}) {
+  const {user, userDoc} = useAuth();
+  const [audio, setAudio] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
+  const [renameId, setRenameId] = useState(null);
+  const [renameValue, setRenameValue] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState(null);
+  const [requestOpen, setRequestOpen] = useState(false);
+  const [requestNote, setRequestNote] = useState('');
+  const [requestRef, setRequestRef] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [requests, setRequests] = useState([]);
+  const [playingId, setPlayingId] = useState(null);
+  const playRef = useRef(null);
+
+  const load = async () => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const snap = await db.collection('audio').where('uid', '==', user.uid).orderBy('createdAt', 'desc').limit(100).get();
+      setAudio(snap.docs.map(d => ({id: d.id, ...d.data()})));
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+    finally { setLoading(false); }
+  };
+  useEffect(() => { load(); }, [user?.uid]);
+
+  useEffect(() => {
+    if (!user) return;
+    apiCall('/api/payment', {method: 'POST', body: {action: 'my-requests'}, token: null})
+      .then(d => setRequests(d.requests || []))
+      .catch(() => {});
+  }, [user?.uid]);
+
+  const play = async (item) => {
+    if (playRef.current?.stop) { playRef.current.stop(); playRef.current = null; }
+    if (playingId === item.id) { setPlayingId(null); return; }
+    try {
+      const res = await fetch(item.downloadURL);
+      const ab = await res.arrayBuffer();
+      const ctx = getAudioCtx();
+      const buf = await decodeAudio(ab, ctx);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.onended = () => setPlayingId(null);
+      src.start(0);
+      playRef.current = {stop: () => { try { src.stop(); } catch {} ctx.close(); }};
+      setPlayingId(item.id);
+    } catch (e) { onToast({type: 'error', message: 'Could not play audio.'}); }
+  };
+
+  const toggleFav = async (item) => {
+    try {
+      await db.collection('audio').doc(item.id).update({isFavorite: !item.isFavorite, updatedAt: firebase.firestore.FieldValue.serverTimestamp()});
+      setAudio(prev => prev.map(a => a.id === item.id ? {...a, isFavorite: !a.isFavorite} : a));
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const saveRename = async () => {
+    if (!renameId || !renameValue.trim()) return;
+    try {
+      await db.collection('audio').doc(renameId).update({title: renameValue.trim(), updatedAt: firebase.firestore.FieldValue.serverTimestamp()});
+      setAudio(prev => prev.map(a => a.id === renameId ? {...a, title: renameValue.trim()} : a));
+      setRenameId(null); setRenameValue('');
+      onToast({type: 'success', message: 'Renamed.'});
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const doDelete = async () => {
+    if (!confirmDelete) return;
+    try {
+      try { await storage.ref(confirmDelete.storagePath).delete(); } catch {}
+      await db.collection('audio').doc(confirmDelete.id).delete();
+      setAudio(prev => prev.filter(a => a.id !== confirmDelete.id));
+      setConfirmDelete(null);
+      onToast({type: 'success', message: 'Deleted.'});
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const download = (item) => {
+    const a = document.createElement('a');
+    a.href = item.downloadURL; a.download = item.filename || 'audio.mp3'; a.target = '_blank';
+    document.body.appendChild(a); a.click(); a.remove();
+  };
+
+  const requestPremium = async () => {
+    if (!user) return;
+    setSubmitting(true);
+    try {
+      const token = await user.getIdToken();
+      const res = await apiCall('/api/payment', {
+        method: 'POST', token,
+        body: {action: 'request-upgrade', plan: 'premium', note: requestNote, reference: requestRef},
+      });
+      onToast({type: 'success', message: res.message || 'Premium requested!'});
+      setRequestOpen(false); setRequestNote(''); setRequestRef('');
+      const fresh = await apiCall('/api/payment', {method: 'POST', token, body: {action: 'my-requests'}});
+      setRequests(fresh.requests || []);
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+    finally { setSubmitting(false); }
+  };
+
+  const filtered = audio.filter(a => filter === 'favorites' ? a.isFavorite : true);
+  const usedChars = userDoc?.usageMonth === new Date().toISOString().slice(0,7) ? (userDoc?.usageChars || 0) : 0;
+  const isPremium = userDoc?.plan === 'premium';
+
+  return (
+    <div>
+      <div className="section-title"><Icon name="chart" size={20} /> Dashboard</div>
+
+      <div className="stats-grid">
+        <div className="stat"><div className="stat-label">Plan</div><div className="stat-value" style={{color: isPremium ? '#f59e0b' : undefined}}>{isPremium ? 'Premium' : 'Free'}</div></div>
+        <div className="stat"><div className="stat-label">Total audio</div><div className="stat-value">{audio.length}</div></div>
+        <div className="stat"><div className="stat-label">Favorites</div><div className="stat-value">{audio.filter(a => a.isFavorite).length}</div></div>
+        <div className="stat"><div className="stat-label">Chars used (month)</div><div className="stat-value">{usedChars.toLocaleString()}</div></div>
+      </div>
+
+      {!isPremium && (
+        <div className="card mb-4" style={{background: 'linear-gradient(135deg, rgba(124,92,255,.1), rgba(168,85,247,.05))', borderColor: 'rgba(124,92,255,.3)'}}>
+          <div className="card-header">
+            <div className="card-title"><Icon name="crown" size={18} style={{color:'#f59e0b'}} /> Upgrade to Premium</div>
+          </div>
+          <p className="text-sm text-muted mb-3">Unlock 500,000 characters/month, extended history and priority generation. Premium is granted by admin after review of your request.</p>
+          <button className="btn primary" onClick={() => setRequestOpen(true)}><Icon name="crown" size={15} /> Request Premium</button>
+        </div>
+      )}
+
+      {requests.length > 0 && (
+        <div className="card mb-4">
+          <div className="card-title mb-3"><Icon name="dollar" size={18} /> My premium requests</div>
+          <div className="form-stack">
+            {requests.slice(0, 5).map(r => (
+              <div key={r.id} className="flex justify-between items-center" style={{padding:'10px 12px',background:'var(--panel2)',borderRadius:8}}>
+                <div>
+                  <div className="text-sm" style={{fontWeight:600}}>{r.plan} · {r.amount} {r.currency}</div>
+                  <div className="text-xs text-muted">{new Date(r.createdAt).toLocaleString('en-IN')}</div>
+                </div>
+                <span className={`plan-badge ${r.status === 'approved' ? 'plan-premium' : 'plan-free'}`}>{r.status}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="card">
+        <div className="card-header">
+          <div className="card-title"><Icon name="audio" size={18} /> Audio history</div>
+          <div className="flex gap-2">
+            <button className={`btn small ${filter === 'all' ? 'primary' : ''}`} onClick={() => setFilter('all')}>All</button>
+            <button className={`btn small ${filter === 'favorites' ? 'primary' : ''}`} onClick={() => setFilter('favorites')}>Favorites</button>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="empty"><Icon name="refresh" size={28} className="spin" /><p className="mt-3">Loading…</p></div>
+        ) : filtered.length === 0 ? (
+          <div className="empty">
+            <div className="empty-icon"><Icon name="audio" size={24} /></div>
+            <p>{filter === 'favorites' ? 'No favorites yet.' : 'No audio generated yet.'}</p>
+          </div>
+        ) : (
+          <div className="history-list">
+            {filtered.map(item => (
+              <div key={item.id} className="history-item">
+                <button className="btn small" onClick={() => play(item)} style={{flexShrink:0,padding:6}}>
+                  <Icon name={playingId === item.id ? 'pause' : 'play'} size={14} />
+                </button>
+                <div className="history-meta">
+                  <div className="history-title">{item.title}</div>
+                  <div className="history-sub">{formatTime(item.duration)} · {item.chunkCount} chunks · {item.createdAt ? new Date(item.createdAt.toDate()).toLocaleDateString('en-IN') : ''}</div>
+                </div>
+                <div className="history-actions">
+                  <button className={`icon-btn ${item.isFavorite ? 'fav-active' : ''}`} onClick={() => toggleFav(item)} title="Favorite"><Icon name="heart" size={15} /></button>
+                  <button className="icon-btn" onClick={() => {setRenameId(item.id); setRenameValue(item.title);}} title="Rename"><Icon name="edit" size={15} /></button>
+                  <button className="icon-btn" onClick={() => download(item)} title="Download"><Icon name="download" size={15} /></button>
+                  <button className="icon-btn" onClick={() => setConfirmDelete(item)} title="Delete"><Icon name="trash" size={15} /></button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <Modal open={!!renameId} title="Rename audio" onClose={() => setRenameId(null)}>
+        <div className="form-stack">
+          <label><span>New title</span>
+            <input type="text" value={renameValue} onChange={e => setRenameValue(e.target.value)} />
+          </label>
+          <button className="btn primary full" onClick={saveRename}>Save</button>
+        </div>
+      </Modal>
+
+      <Modal open={!!confirmDelete} title="Delete audio?" onClose={() => setConfirmDelete(null)}>
+        <p className="text-sm mb-3">This will permanently remove <strong>{confirmDelete?.title}</strong>.</p>
+        <div className="flex gap-2">
+          <button className="btn full" onClick={() => setConfirmDelete(null)}>Cancel</button>
+          <button className="btn danger full" onClick={doDelete}>Delete</button>
+        </div>
+      </Modal>
+
+      <Modal open={requestOpen} title="Request Premium" onClose={() => setRequestOpen(false)}>
+        <div className="form-stack">
+          <p className="text-sm text-muted">Your request will be reviewed by an admin. No automatic charge is made.</p>
+          <label><span>Payment reference (optional)</span>
+            <input type="text" value={requestRef} onChange={e => setRequestRef(e.target.value)} placeholder="UPI Txn ID / bank reference" />
+          </label>
+          <label><span>Message to admin (optional)</span>
+            <textarea value={requestNote} onChange={e => setRequestNote(e.target.value)} placeholder="Any notes" maxLength={500} />
+          </label>
+          <LoadingBtn className="btn primary full" loading={submitting} onClick={requestPremium}>Submit request</LoadingBtn>
+        </div>
+      </Modal>
+    </div>
+  );
+}
+
+/* ============================================================
+   ADMIN DASHBOARD
+   ============================================================ */
+function AdminDashboard({onExit, onToast}) {
+  const {getToken} = useAuth();
+  const [tab, setTab] = useState('stats');
+  const [stats, setStats] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [plans, setPlans] = useState(DEFAULT_PLANS);
+  const [settings, setSettings] = useState({});
+  const [audioStats, setAudioStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState('');
+  const [approvingDays, setApprovingDays] = useState(30);
+
+  const adminApi = async (action, body) => {
+    const token = await getToken();
+    const method = body ? 'POST' : 'GET';
+    return apiCall(`/api/admin?action=${action}`, {method, token, body});
+  };
+
+  const loadAll = async () => {
+    setLoading(true); setErr('');
+    try {
+      const [s, u, r, p, st, a] = await Promise.all([
+        adminApi('stats'),
+        adminApi('users'),
+        adminApi('requests'),
+        adminApi('get-plans'),
+        adminApi('get-settings'),
+        adminApi('audio-stats'),
+      ]);
+      setStats(s); setUsers(u.users || []); setRequests(r.requests || []);
+      setPlans(p.plans || DEFAULT_PLANS); setSettings(st.settings || {}); setAudioStats(a);
+    } catch (e) { setErr(e.message); }
+    finally { setLoading(false); }
+  };
+  useEffect(() => { loadAll(); }, []);
+
+  const toggleBlock = async (uid) => {
+    try {
+      const r = await adminApi('toggle-block', {uid});
+      setUsers(prev => prev.map(u => u.uid === uid ? {...u, isBlocked: r.isBlocked} : u));
+      onToast({type: 'success', message: r.isBlocked ? 'User blocked.' : 'User unblocked.'});
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const grantPremium = async (uid) => {
+    try {
+      await adminApi('grant-premium', {uid, days: 30});
+      onToast({type: 'success', message: 'Premium granted (30 days).'});
+      loadAll();
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const revokePremium = async (uid) => {
+    try {
+      await adminApi('revoke-premium', {uid});
+      onToast({type: 'success', message: 'Premium revoked.'});
+      loadAll();
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const approveReq = async (id) => {
+    try {
+      await adminApi('approve-request', {requestId: id, days: approvingDays});
+      onToast({type: 'success', message: 'Request approved.'});
+      loadAll();
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const rejectReq = async (id) => {
+    try {
+      await adminApi('reject-request', {requestId: id});
+      onToast({type: 'success', message: 'Request rejected.'});
+      loadAll();
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const savePlans = async () => {
+    try {
+      await adminApi('update-plans', {plans});
+      onToast({type: 'success', message: 'Plans saved.'});
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  const saveSettings = async () => {
+    try {
+      await adminApi('update-settings', {settings});
+      onToast({type: 'success', message: 'Settings saved.'});
+    } catch (e) { onToast({type: 'error', message: e.message}); }
+  };
+
+  return (
+    <div>
+      <div className="section-title justify-between" style={{display:'flex'}}>
+        <div className="flex items-center gap-2"><Icon name="shield" size={20} /> Admin Dashboard</div>
+        <div className="flex gap-2">
+          <button className="btn small" onClick={loadAll}><Icon name="refresh" size={14} /> Refresh</button>
+          <button className="btn small danger" onClick={onExit}><Icon name="close" size={14} /> Exit</button>
+        </div>
+      </div>
+
+      {err && <div className="form-error mb-3"><Icon name="alert" size={15} /><span>{err}</span></div>}
+
+      <div className="tabs">
+        {['stats', 'users', 'requests', 'plans', 'settings', 'audio'].map(t => (
+          <button key={t} className={`tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
+            {t === 'stats' && <><Icon name="chart" size={14} /> Stats</>}
+            {t === 'users' && <><Icon name="users" size={14} /> Users</>}
+            {t === 'requests' && <><Icon name="dollar" size={14} /> Requests</>}
+            {t === 'plans' && <><Icon name="crown" size={14} /> Plans</>}
+            {t === 'settings' && <><Icon name="settings" size={14} /> Settings</>}
+            {t === 'audio' && <><Icon name="audio" size={14} /> Audio</>}
+          </button>
+        ))}
+      </div>
+
+      {loading && <div className="empty"><Icon name="refresh" size={28} className="spin" /><p className="mt-3">Loading…</p></div>}
+
+      {!loading && tab === 'stats' && stats && (
+        <div className="admin-stats">
+          <div className="stat"><div className="stat-label">Total users</div><div className="stat-value">{stats.totalUsers}</div></div>
+          <div className="stat"><div className="stat-label">Premium</div><div className="stat-value">{stats.premiumUsers}</div></div>
+          <div className="stat"><div className="stat-label">Audio files</div><div className="stat-value">{stats.totalAudio}</div></div>
+          <div className="stat"><div className="stat-label">Pending requests</div><div className="stat-value">{stats.pendingRequests}</div></div>
+          <div className="stat"><div className="stat-label">Total chars</div><div className="stat-value">{stats.totalChars?.toLocaleString()}</div></div>
+        </div>
+      )}
+
+      {!loading && tab === 'users' && (
+        <div>
+          {users.length === 0 ? <div className="empty">No users yet.</div> : users.map(u => (
+            <div key={u.uid} className="user-row">
+              <div className="avatar">{(u.email || 'U')[0].toUpperCase()}</div>
+              <div className="user-info">
+                <div className="user-email">{u.email || u.displayName || u.uid}</div>
+                <div className="user-meta">
+                  {u.plan} {u.premiumUntil ? `until ${new Date(u.premiumUntil).toLocaleDateString('en-IN')}` : ''} · {u.totalGenerations} gen · {u.usageChars} chars
+                  {u.isBlocked && <span style={{color:'var(--danger)',fontWeight:700}}> · BLOCKED</span>}
+                </div>
+              </div>
+              <div className="user-actions">
+                <button className={`btn small ${u.isBlocked ? 'success' : 'danger'}`} onClick={() => toggleBlock(u.uid)}>
+                  {u.isBlocked ? 'Unblock' : 'Block'}
+                </button>
+                {u.plan === 'premium'
+                  ? <button className="btn small" onClick={() => revokePremium(u.uid)}>Revoke</button>
+                  : <button className="btn small primary" onClick={() => grantPremium(u.uid)}>Grant</button>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!loading && tab === 'requests' && (
+        <div>
+          <div className="flex gap-2 mb-3">
+            <label style={{flexDirection:'row',alignItems:'center',gap:8}}>
+              <span>Approve for</span>
+              <input type="number" min="1" max="365" value={approvingDays} onChange={e => setApprovingDays(Number(e.target.value))} style={{width:80}} />
+              <span>days</span>
+            </label>
+          </div>
+          {requests.length === 0 ? <div className="empty">No premium requests yet.</div> : requests.map(r => (
+            <div key={r.id} className="user-row">
+              <div className="user-info">
+                <div className="user-email">{r.email || r.uid}</div>
+                <div className="user-meta">{r.plan} · {r.amount} {r.currency} · {r.status} {r.note && `· "${r.note}"`} {r.reference && `· ref: ${r.reference}`}</div>
+              </div>
+              {r.status === 'pending' && (
+                <div className="user-actions">
+                  <button className="btn small success" onClick={() => approveReq(r.id)}>Approve</button>
+                  <button className="btn small danger" onClick={() => rejectReq(r.id)}>Reject</button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {!loading && tab === 'plans' && (
+        <div className="card">
+          <div className="form-row">
+            <div>
+              <div className="section-title">Free plan</div>
+              <div className="form-stack">
+                <label><span>Char limit</span><input type="number" value={plans.free.charLimit} onChange={e => setPlans({...plans, free: {...plans.free, charLimit: Number(e.target.value)}})} /></label>
+                <label><span>History limit</span><input type="number" value={plans.free.historyLimit} onChange={e => setPlans({...plans, free: {...plans.free, historyLimit: Number(e.target.value)}})} /></label>
+              </div>
+            </div>
+            <div>
+              <div className="section-title">Premium plan</div>
+              <div className="form-stack">
+                <label><span>Char limit</span><input type="number" value={plans.premium.charLimit} onChange={e => setPlans({...plans, premium: {...plans.premium, charLimit: Number(e.target.value)}})} /></label>
+                <label><span>History limit</span><input type="number" value={plans.premium.historyLimit} onChange={e => setPlans({...plans, premium: {...plans.premium, historyLimit: Number(e.target.value)}})} /></label>
+                <label><span>Price (INR)</span><input type="number" value={plans.premium.price} onChange={e => setPlans({...plans, premium: {...plans.premium, price: Number(e.target.value)}})} /></label>
+              </div>
+            </div>
+          </div>
+          <button className="btn primary mt-4" onClick={savePlans}>Save plans</button>
+        </div>
+      )}
+
+      {!loading && tab === 'settings' && (
+        <div className="card">
+          <div className="form-stack">
+            <label><span>Site name</span><input type="text" value={settings.siteName || 'Hindi Voice Studio AI'} onChange={e => setSettings({...settings, siteName: e.target.value})} /></label>
+            <label><span>Support email</span><input type="email" value={settings.supportEmail || ''} onChange={e => setSettings({...settings, supportEmail: e.target.value})} /></label>
+            <label><span>Announcement</span><textarea value={settings.announcement || ''} onChange={e => setSettings({...settings, announcement: e.target.value})} maxLength={2000} /></label>
+            <button className="btn primary" onClick={saveSettings}>Save settings</button>
+          </div>
+        </div>
+      )}
+
+      {!loading && tab === 'audio' && audioStats && (
+        <div>
+          <div className="admin-stats mb-4">
+            <div className="stat"><div className="stat-label">Total audio</div><div className="stat-value">{audioStats.totalAudio}</div></div>
+            <div className="stat"><div className="stat-label">Recent duration</div><div className="stat-value">{formatTime(audioStats.recentDuration)}</div></div>
+          </div>
+          {audioStats.recent?.map(a => (
+            <div key={a.id} className="user-row">
+              <div className="user-info">
+                <div className="user-email">{a.title}</div>
+                <div className="user-meta">{formatTime(a.duration)} · {a.chunkCount} chunks · {a.format}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+   APP
+   ============================================================ */
+function App() {
+  const {user, userDoc, isAdmin, ready, logout} = useAuth();
+  const [view, setView] = useState('studio');
+  const [authOpen, setAuthOpen] = useState(false);
+  const [adminLoginOpen, setAdminLoginOpen] = useState(false);
+  const [adminMode, setAdminMode] = useState(false);
+  const [toasts, setToasts] = useState([]);
+
+  const pushToast = useCallback((t) => {
+    const id = Date.now() + Math.random();
+    setToasts(prev => [...prev, {...t, id}]);
+    setTimeout(() => setToasts(prev => prev.filter(x => x.id !== id)), 4500);
+  }, []);
+  const dismissToast = (id) => setToasts(prev => prev.filter(x => x.id !== id));
+
+  if (!ready) {
+    return (
+      <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:14}}>
+        <Icon name="refresh" size={32} className="spin" style={{color:'var(--accent)'}} />
+        <span className="text-muted">Starting…</span>
+      </div>
+    );
+  }
+
+  if (userDoc?.isBlocked) {
+    return (
+      <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',padding:20}}>
+        <div className="card" style={{maxWidth:420,textAlign:'center'}}>
+          <div className="empty-icon" style={{color:'var(--danger)'}}><Icon name="alert" size={26} /></div>
+          <h2 className="mb-2">Account blocked</h2>
+          <p className="text-muted mb-4">Your account has been blocked. Please contact support.</p>
+          <button className="btn full" onClick={logout}>Sign out</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="app-shell">
+        <header className="header">
+          <div className="header-inner">
+            <Logo onFiveClick={() => setAdminLoginOpen(true)} />
+            <div className="header-actions">
+              {user && (
+                <>
+                  <button className={`btn small ${view === 'studio' ? 'primary' : ''}`} onClick={() => setView('studio')}>Studio</button>
+                  <button className={`btn small ${view === 'dashboard' ? 'primary' : ''}`} onClick={() => setView('dashboard')}>Dashboard</button>
+                  {isAdmin && (
+                    <button className={`btn small ${view === 'admin' ? 'primary' : ''}`} onClick={() => setView('admin')}>
+                      <Icon name="shield" size={13} /> Admin
+                    </button>
+                  )}
+                </>
+              )}
+              {user ? (
+                <div className="user-chip">
+                  <div className="avatar">{(user.email || 'U')[0].toUpperCase()}</div>
+                  <span style={{maxWidth:100,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{user.displayName || user.email}</span>
+                  <span className={`plan-badge ${userDoc?.plan === 'premium' ? 'plan-premium' : 'plan-free'}`}>{userDoc?.plan || 'free'}</span>
+                  <button className="icon-btn" onClick={logout} title="Sign out" style={{marginLeft:2}}><Icon name="logout" size={14} /></button>
+                </div>
+              ) : (
+                <button className="btn primary" onClick={() => setAuthOpen(true)}>Sign in</button>
+              )}
+            </div>
+          </div>
+        </header>
+
+        <main className="main">
+          {view === 'studio' && <Studio onRequireAuth={() => setAuthOpen(true)} onToast={pushToast} />}
+          {view === 'dashboard' && (user ? <Dashboard onToast={pushToast} /> : <div className="empty"><Icon name="lock" size={28} /><p className="mt-3">Please sign in to view your dashboard.</p><button className="btn primary mt-3" onClick={() => setAuthOpen(true)}>Sign in</button></div>)}
+          {view === 'admin' && (isAdmin ? <AdminDashboard onExit={() => setView('studio')} onToast={pushToast} /> : <div className="empty"><Icon name="shield" size={28} /><p className="mt-3">Admin access required.</p></div>)}
+        </main>
+      </div>
+
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} onToast={pushToast} />
+      <AdminLoginModal
+        open={adminLoginOpen}
+        onClose={() => setAdminLoginOpen(false)}
+        onSuccess={() => setView('admin')}
+        onToast={pushToast}
+      />
+      <Toast toasts={toasts} onDismiss={dismissToast} />
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <AuthProvider><App /></AuthProvider>
+);
+</script>
+</body>
+</html>
